@@ -1,0 +1,12 @@
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    phpVersion: 80199
+    checkGenericClassInNonGenericObjectType: false
+    level: 9
+    tmpDir: var/cache/phpstan
+    paths:
+        - src
+    parallel:
+        maximumNumberOfProcesses: 4

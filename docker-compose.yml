@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  db:
+    image: mysql:8.0.31
+    ports:
+      - "5432:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: hunter2
+      MYSQL_PASSWORD: user
+      MYSQL_USER: user
+      MYSQL_DATABASE: quest
+
+  php:
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    build:
+      context: .docker
+      dockerfile: php.Dockerfile
+    ports:
+      - "9000"
+    volumes:
+      - .:/quest
+    working_dir: /quest
+    command: >
+      sh -c "composer install && bin/console doctrine:migrations:migrate --allow-no-migration && php-fpm"
+
+  nginx:
+    build:
+      context: .docker
+      dockerfile: nginx.Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    links:
+      - php
