@@ -101,7 +101,8 @@
             "@auto-scripts"
         ],
         "test": [
-            "vendor/bin/phpstan analyse --memory-limit=1G  --no-progress"
+            "vendor/bin/phpunit",
+            "vendor/bin/phpstan analyse --memory-limit=1G"
         ]
     },
     "conflict": {
