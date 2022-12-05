@@ -6,38 +6,39 @@ use App\Repository\AnswerRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AnswerRepository::class)]
+#[ORM\Index(fields: ['fixedNumeric'], name: 'IDX_fixed')]
 class Answer
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private int $id;
 
     #[ORM\ManyToOne(targetEntity: Question::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private $question;
+    private Question $question;
 
     #[ORM\Column(type: 'integer', nullable: true)]
-    private $fixedNumeric;
+    private ?int $fixedNumeric;
 
     #[ORM\Column(type: 'text', nullable: true)]
-    private $freeText;
+    private ?string $freeText;
 
-    public function getId(): ?int
+    public function __construct(Question $question, ?int $fixedNumeric, ?string $freeText)
+    {
+        $this->question = $question;
+        $this->fixedNumeric = $fixedNumeric;
+        $this->freeText = $freeText;
+    }
+
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getQuestion(): ?Question
+    public function getQuestion(): Question
     {
         return $this->question;
-    }
-
-    public function setQuestion(?Question $question): self
-    {
-        $this->question = $question;
-
-        return $this;
     }
 
     public function getFixedNumeric(): ?int
@@ -45,22 +46,8 @@ class Answer
         return $this->fixedNumeric;
     }
 
-    public function setFixedNumeric(?int $fixedNumeric): self
-    {
-        $this->fixedNumeric = $fixedNumeric;
-
-        return $this;
-    }
-
     public function getFreeText(): ?string
     {
         return $this->freeText;
-    }
-
-    public function setFreeText(?string $freeText): self
-    {
-        $this->freeText = $freeText;
-
-        return $this;
     }
 }

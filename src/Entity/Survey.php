@@ -11,40 +11,35 @@ class Survey
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private int $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $name;
+    private string $name;
 
-    #[ORM\Column(type: 'array')]
-    private $questions = [];
+    #[ORM\Column(type: 'json')]
+    private $questions;
 
-    public function getId(): ?int
+    /**
+     * @param Question[] $questions
+     */
+    public function __construct(string $name, array $questions)
+    {
+        $this->name = $name;
+        $this->questions = array_map(fn(Question $x): int => $x->getId(), $questions);
+    }
+
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function getQuestions(): ?array
+    public function getQuestionIds(): array
     {
         return $this->questions;
-    }
-
-    public function setQuestions(array $questions): self
-    {
-        $this->questions = $questions;
-
-        return $this;
     }
 }
