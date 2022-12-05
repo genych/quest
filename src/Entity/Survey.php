@@ -16,8 +16,9 @@ class Survey
     #[ORM\Column(type: 'string', length: 255)]
     private string $name;
 
+    /** @var int[] */
     #[ORM\Column(type: 'json')]
-    private $questions;
+    private array $questions;
 
     /**
      * @param Question[] $questions
@@ -38,6 +39,9 @@ class Survey
         return $this->name;
     }
 
+    /**
+     * @return int[]
+     */
     public function getQuestionIds(): array
     {
         return $this->questions;
