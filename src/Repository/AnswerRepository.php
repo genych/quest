@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Answer;
+use App\Entity\Question;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -21,46 +22,20 @@ class AnswerRepository extends ServiceEntityRepository
         parent::__construct($registry, Answer::class);
     }
 
-    public function add(Answer $entity, bool $flush = false): void
+    /**
+     * @param Question|int $question
+     * @return iterable<?string>
+     */
+    public function getText(Question|int $question): iterable
     {
-        $this->getEntityManager()->persist($entity);
+        $dql = 'select a.freeText from App\Entity\Answer a where a.question = :question';
 
-        if ($flush) {
-            $this->getEntityManager()->flush();
+        $chunks = $this->getEntityManager()->createQuery($dql)
+            ->setParameter('question', $question)
+            ->toIterable();
+
+        foreach ($chunks as $chunk) { // unwrap results
+            yield $chunk['freeText'];
         }
     }
-
-    public function remove(Answer $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->remove($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
-//    /**
-//     * @return Answer[] Returns an array of Answer objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('a.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Answer
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }
