@@ -20,6 +20,22 @@ class SurveyController extends AbstractController
         return $this->json($service->surveyToDto($id));
     }
 
+    /**
+     * @example:
+     *   POST http://localhost/survey
+     *   Content-Type: application/json
+     *
+     *   {
+     *     "surveyId": int,
+     *     "answers": [{ "questionId": int, "value": int|string|null }, …]
+     *   }
+     *
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @param SurveyService $service
+     * @return JsonResponse
+     * @throws \Throwable
+     */
     #[Route(path: '/survey', methods: ['POST'])]
     public function submitSurvey(
         Request $request,
