@@ -44,6 +44,7 @@
         "twig/twig": "^2.12|^3.0"
     },
     "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^3.4",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan": "^1.6",
         "phpstan/phpstan-beberlei-assert": "^1.0",

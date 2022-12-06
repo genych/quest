@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Contract\QuestionType;
 use App\Repository\QuestionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -20,10 +21,10 @@ class Question
     private string $type;
 
 //todo: type enum/dto
-    public function __construct(string $name, string $type)
+    public function __construct(string $name, QuestionType $type)
     {
         $this->name = $name;
-        $this->type = $type;
+        $this->type = $type->value;
     }
 
     public function getId(): int
@@ -36,8 +37,8 @@ class Question
         return $this->name;
     }
 
-    public function getType(): string
+    public function getType(): QuestionType
     {
-        return $this->type;
+        return QuestionType::from($this->type);
     }
 }

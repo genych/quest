@@ -23,7 +23,9 @@ services:
       - .:/quest
     working_dir: /quest
     command: >
-      sh -c "composer install && bin/console doctrine:migrations:migrate --allow-no-migration && php-fpm"
+      sh -c "composer install && bin/console doctrine:migrations:migrate --allow-no-migration && bin/console doctrine:fixture:load --no-interaction && php-fpm"
+    links:
+      - db
 
   nginx:
     build:
