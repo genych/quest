@@ -16,6 +16,13 @@ doctrine:
                 prefix: 'App\Entity'
                 alias: App
 
+when@dev:
+    doctrine:
+        dbal:
+            options:
+                # experimental. looks necessary for LOAD DATA statements from PDO
+                !php/const PDO::MYSQL_ATTR_LOCAL_INFILE: true
+
 when@test:
     doctrine:
         dbal:
