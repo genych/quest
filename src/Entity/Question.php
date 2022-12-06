@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Contract\QuestionDto;
 use App\Contract\QuestionType;
 use App\Repository\QuestionRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -25,6 +26,11 @@ class Question
     {
         $this->name = $name;
         $this->type = $type->value;
+    }
+
+    public function toDto(): QuestionDto
+    {
+        return new QuestionDto($this->getId(), $this->getName(), $this->getType());
     }
 
     public function getId(): int
