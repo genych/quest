@@ -7,8 +7,6 @@ services:
       - "5432:3306"
     environment:
       MYSQL_ROOT_PASSWORD: hunter2
-      MYSQL_PASSWORD: user
-      MYSQL_USER: user
       MYSQL_DATABASE: quest
 
   php:
