@@ -12,12 +12,20 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class SurveyController extends AbstractController
 {
-    #[Route(path: 'survey/{id}', methods: ['GET'])]
+    #[Route(path: '/survey/{id}', methods: ['GET'])]
     public function getSurvey(
         int $id,
         SurveyService $service,
     ): JsonResponse {
         return $this->json($service->surveyToDto($id));
+    }
+
+//todo: docs
+    #[Route(path: '/stats', methods: ['GET'])]
+    public function getStats(
+        SurveyService $service,
+    ): JsonResponse {
+        return $this->json($service->getAllStats());
     }
 
     /**

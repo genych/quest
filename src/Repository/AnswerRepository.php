@@ -22,6 +22,21 @@ class AnswerRepository extends ServiceEntityRepository
         parent::__construct($registry, Answer::class);
     }
 
+//todo: shape? dto?
+    /**
+     * @param Question|int $question
+     * @return array<int, array<string, ?int>> [["option": ?int, "cnt": int]]
+     */
+    public function getDistribution(Question|int $question): array
+    {
+        $dql = 'select a.fixedNumeric option, count(1) cnt from App\Entity\Answer a 
+            where a.question = :question group by a.fixedNumeric order by a.fixedNumeric ASC';
+
+        return $this->getEntityManager()->createQuery($dql)
+            ->setParameter('question', $question)
+            ->getArrayResult();
+    }
+
     /**
      * @param Question|int $question
      * @return iterable<?string>

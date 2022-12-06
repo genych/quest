@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Contract\FixedRangeAnswerStatsDto;
 use App\Contract\FreeTextAnswerStatsDto;
 use App\Contract\QuestionDto;
 use App\Contract\QuestionType;
@@ -13,6 +14,7 @@ use App\Repository\AnswerRepository;
 use App\Repository\QuestionRepository;
 use App\Repository\SurveyRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use JetBrains\PhpStorm\ArrayShape;
 
 class SurveyService
 {
@@ -74,6 +76,44 @@ class SurveyService
         $this->em->flush();
     }
 
+//todo: a couple more DTOs?
+
+    /**
+     * @return array<string, mixed>
+     */
+    #[ArrayShape(['fixed range questions' => "\App\Contract\FixedRangeAnswerStatsDto[]", 'free text questions' => "\App\Contract\FreeTextAnswerStatsDto"])]
+    public function getAllStats(): array
+    {
+        return [
+            'fixed range questions' => $this->rangeAnswersStats(),
+            'free text questions' => $this->freeTextStats(),
+        ];
+    }
+
+    /**
+     * @return FixedRangeAnswerStatsDto[]
+     */
+    public function rangeAnswersStats(): array
+    {
+        $rangeQuestions = $this->questionRepository->findBy(['type' => QuestionType::SINGLE_05_RANGE]);
+
+        $stats = [];
+        foreach ($rangeQuestions as $q) {
+            $count = $this->countAnswers([$q]);
+            $distribution = $this->answerRepository->getDistribution($q);
+            $average = $this->average($distribution);
+
+            $stats[] = new FixedRangeAnswerStatsDto(
+                questionId: $q->getId(),
+                answers: $count,
+                average: $average,
+                distribution: $distribution
+            );
+        }
+
+        return $stats;
+    }
+
     public function freeTextStats(): FreeTextAnswerStatsDto
     {
         $freeTextQuestions = $this->questionRepository->findBy(['type' => QuestionType::FREE_TEXT]);
@@ -130,5 +170,27 @@ class SurveyService
                 $dictionary[$word] = 1;
             }
         }
+    }
+
+    /**
+     * @param array<int, array<string, ?int>> $distribution
+     * @return float
+     */
+    private function average(array $distribution): float
+    {
+        $n = 0;
+        $acc = 0;
+        foreach ($distribution as $_ => ['option' => $value, 'cnt' => $count]) {
+            if ($value === null) { // skip unanswered
+                continue;
+            }
+            $n += $count;
+            $acc += $value * $count;
+        }
+
+        if ($n === 0) {
+            return 0.0;
+        }
+        return $acc / $n;
     }
 }
