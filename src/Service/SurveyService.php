@@ -13,6 +13,7 @@ use App\Entity\Question;
 use App\Repository\AnswerRepository;
 use App\Repository\QuestionRepository;
 use App\Repository\SurveyRepository;
+use App\Utility\Stats;
 use Doctrine\ORM\EntityManagerInterface;
 use JetBrains\PhpStorm\ArrayShape;
 
@@ -101,7 +102,7 @@ class SurveyService
         foreach ($rangeQuestions as $q) {
             $count = $this->countAnswers([$q]);
             $distribution = $this->answerRepository->getDistribution($q);
-            $average = $this->average($distribution);
+            $average = Stats::average($distribution);
 
             $stats[] = new FixedRangeAnswerStatsDto(
                 questionId: $q->getId(),
@@ -135,7 +136,7 @@ class SurveyService
         foreach ($questions as $q) {
             $textIterable = $this->answerRepository->getText($q);
             foreach ($textIterable as $answer) {
-                $this->updateWordFrequency($frequency, (string)$answer);
+                Stats::updateWordFrequency($frequency, (string)$answer);
             }
         }
 
@@ -151,46 +152,5 @@ class SurveyService
     private function countAnswers(array $questions): int
     {
         return $this->answerRepository->count(['question' => $questions]);
-    }
-
-    private function updateWordFrequency(array &$dictionary, string $text): void
-    {
-        // just English letters, spaces and dashes. barbaric!
-        $text = preg_replace('/[^a-zA-Z -]+/', '', $text);
-
-        $words = explode(' ', $text);
-        foreach ($words as $word) {
-            $word = trim($word);
-            if (mb_strlen($word) < 2) { // and only 3+ lettered words!
-                continue;
-            }
-            if (array_key_exists($word, $dictionary)) {
-                $dictionary[$word]++;
-            } else {
-                $dictionary[$word] = 1;
-            }
-        }
-    }
-
-    /**
-     * @param array<int, array<string, ?int>> $distribution
-     * @return float
-     */
-    private function average(array $distribution): float
-    {
-        $n = 0;
-        $acc = 0;
-        foreach ($distribution as $_ => ['option' => $value, 'cnt' => $count]) {
-            if ($value === null) { // skip unanswered
-                continue;
-            }
-            $n += $count;
-            $acc += $value * $count;
-        }
-
-        if ($n === 0) {
-            return 0.0;
-        }
-        return $acc / $n;
     }
 }
