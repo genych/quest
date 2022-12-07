@@ -49,13 +49,20 @@ class AppFixtures extends Fixture
 
         // source for free text question
         $randomText = file_get_contents(__FILE__);
+//todo: make sure asserts enabled in php.ini
+        assert($randomText !== false);
+
         $randomText = str_replace(',', ' ', $randomText); // lame way to reserve , for separator
         $randomText = explode(PHP_EOL, $randomText);
         $nLines = count($randomText) - 1;
 
         // prepare answers as temporary csv file to load into db at once. seems more fun than constructing bulk inserts
         $path = tempnam('/tmp', '');
+        assert($path !== false);
+
         $handle = fopen($path,'w');
+        assert($handle !== false);
+
         foreach ($questions as $q) {
             $id = $q->getId();
             $i = 100_000;

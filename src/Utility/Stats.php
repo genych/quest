@@ -4,12 +4,17 @@ namespace App\Utility;
 
 class Stats
 {
+    /**
+     * @param array<string, int> $dictionary
+     * @param string $text
+     * @return void
+     */
     public static function updateWordFrequency(array &$dictionary, string $text): void
     {
         // just English letters, spaces and dashes. barbaric!
         $text = preg_replace('/[^a-zA-Z -]+/', ' ', $text);
 
-        $words = explode(' ', $text);
+        $words = explode(' ', (string)$text);
         foreach ($words as $word) {
             $word = trim($word);
             if (mb_strlen($word) < 2) { // and only 2+ lettered words!
@@ -24,7 +29,7 @@ class Stats
     }
 
     /**
-     * @param array<int, array<string, ?int>> $distribution
+     * @param mixed[] $distribution
      * @return float
      */
     public static function average(array $distribution): float

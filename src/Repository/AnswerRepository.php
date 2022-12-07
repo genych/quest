@@ -25,7 +25,7 @@ class AnswerRepository extends ServiceEntityRepository
 //todo: shape? dto?
     /**
      * @param Question|int $question
-     * @return array<int, array<string, ?int>> [["option": ?int, "cnt": int]]
+     * @return mixed[] [["option": ?int, "cnt": int]]
      */
     public function getDistribution(Question|int $question): array
     {
@@ -45,6 +45,7 @@ class AnswerRepository extends ServiceEntityRepository
     {
         $dql = 'select a.freeText from App\Entity\Answer a where a.question = :question';
 
+        /** @var iterable<array<string, ?string>> $chunks */
         $chunks = $this->getEntityManager()->createQuery($dql)
             ->setParameter('question', $question)
             ->toIterable();

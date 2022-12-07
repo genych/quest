@@ -8,7 +8,7 @@ class FixedRangeAnswerStatsDto
      * @param int $questionId
      * @param int $answers
      * @param float $average
-     * @param array<int, array<string, ?int>> $distribution
+     * @param mixed[] $distribution
      */
     public function __construct(
         private int $questionId,
@@ -33,7 +33,7 @@ class FixedRangeAnswerStatsDto
     }
 
     /**
-     * @return array<int, array<string, ?int>>
+     * @return mixed[]
      */
     public function getDistribution(): array
     {

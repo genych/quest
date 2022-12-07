@@ -6,7 +6,7 @@ class AnswerDto
 {
     public function __construct(
         private int $questionId,
-        private mixed $value,
+        private int|string|null $value,
     ) { }
 
     public function getQuestionId(): int
@@ -14,7 +14,7 @@ class AnswerDto
         return $this->questionId;
     }
 
-    public function getValue(): mixed
+    public function getValue(): int|string|null
     {
         return $this->value;
     }

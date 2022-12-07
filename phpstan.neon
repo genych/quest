@@ -8,5 +8,8 @@ parameters:
     tmpDir: var/cache/phpstan
     paths:
         - src
+        - tests
     parallel:
         maximumNumberOfProcesses: 4
+    ignoreErrors: # add them prudently
+        - "#^Attribute class JetBrains#" # optional handy feature
